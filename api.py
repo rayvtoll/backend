@@ -25,13 +25,11 @@ def create_container():
     data = json.loads(str(X))
     for i in range(0, len(data)):
         if data[i]['Names'] == request.json:
-            #if str("vcd-" + request.json) in str(subprocess.check_output(dockerPs, shell=True)):
             activeSessionString = "docker exec vcd-" + request.json + " ps -ef h | grep xrdp"
             activeSession = subprocess.check_output(activeSessionString, shell=True)
             if not "Xorg" in str(activeSession):
                 os.system("docker container rm -f vcd-" + request.json)
-    # added --device /dev/video0 --group-add video --memory 1gb
-    dockerRun = str('docker run --rm --name vcd-' + request.json + ' -d --network ' + netWork + ' -e USER=' + request.json + ' -v ' + externalVolume + request.json + '/:/home/' + request.json + '/ ' + vcdImage)
+    dockerRun = str('docker run --rm -v /etc/localtime:/etc/localtime:ro --name vcd-' + request.json + ' -d --network ' + netWork + ' -e USER=' + request.json + ' -v ' + externalVolume + request.json + '/:/home/' + request.json + '/ ' + vcdImage)
     return jsonify([{'request' : dockerRun }, {'exitcode' : os.system(dockerRun)}])
 
 @app.errorhandler(400)
