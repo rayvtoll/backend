@@ -4,7 +4,6 @@ externalVolume = '/opt/vcde/'
 
 # Other variables
 netWork = 'vcd_frontend'
-#vcdImage = 'winrdplxde4'
 vcdImage = 'rayvtoll/containerdesktop'
 
 import os
