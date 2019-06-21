@@ -29,7 +29,7 @@ def create_container():
             activeSession = subprocess.check_output(activeSessionString, shell=True)
             if not "Xorg" in str(activeSession):
                 os.system("docker container rm -f vcd-" + request.json)
-    dockerRun = str('docker run --rm -v /etc/localtime:/etc/localtime:ro --name vcd-' + request.json + ' -d --network ' + netWork + ' -e USER=' + request.json + ' -v ' + externalVolume + request.json + '/:/home/' + request.json + '/ ' + vcdImage)
+    dockerRun = str('docker run --rm --name vcd-' + request.json + ' -d --network ' + netWork + ' -e USER=' + request.json + ' -v ' + externalVolume + request.json + '/:/home/' + request.json + '/ ' + vcdImage)
     return jsonify([{'request' : dockerRun }, {'exitcode' : os.system(dockerRun)}])
 
 @app.errorhandler(400)
