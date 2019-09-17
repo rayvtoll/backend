@@ -4,12 +4,16 @@ externalVolume = '/opt/vcde/'
 # Other variables
 netWork = 'vcd_frontend'
 vcdImage = 'rayvtoll/containerdesktop:latest'
+timeZone = 'TZ="Europe/Amsterdam"'
 
 import os
 import subprocess
 from flask import Flask, jsonify, request, make_response
 import json
 app = Flask(__name__)
+
+def docker_run(request):
+    return str('docker run --rm -e ' + timeZone  + ' -h vcd-' + request + ' --name vcd-' + request + ' -d --network ' + netWork + ' -e USER=' + request + ' -v ' + externalVolume + request + '/:/home/' + request + '/ ' + ' -v ' + externalVolume + 'Public:/home/' + request + '/Public ' + vcdImage)
 
 @app.route('/', methods=['GET'])
 def list_containers():
@@ -18,7 +22,7 @@ def list_containers():
 
 @app.route('/', methods=['POST'])
 def create_container():
-    dockerRun = str('docker run --rm  -h vcd-' + request.json + ' --name vcd-' + request.json + ' -d --network ' + netWork + ' -e USER=' + request.json + ' -v ' + externalVolume + request.json + '/:/home/' + request.json + '/ ' + ' -v ' + externalVolume + 'Public:/home/' + request.json + '/Public ' + vcdImage)
+    dockerRun = docker_run(request.json)
     return jsonify([{'request' : dockerRun }, {'exitcode' : os.system(dockerRun)}])
 
 @app.errorhandler(400)
